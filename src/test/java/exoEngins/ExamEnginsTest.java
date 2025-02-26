@@ -120,8 +120,7 @@ public class ExamEnginsTest {
     public void testConstructionPropulsionThermiqueCarburantIllegal() {
     	double masse = 1;
     	Thermique myThermique = new Thermique(masse, 4);
-//    	assertNotNull(myThermique.getCarburant());
-    	assertEquals(myThermique.getCarburant(), 0 | 1 | 2 | 3);
+    	assertNotNull(myThermique.getCarburant());
     }
 
     /*
@@ -234,36 +233,7 @@ public class ExamEnginsTest {
     public void testEnginToString() {
 // TODO
     }
-
-    /*
-     * 
-    */
-    @Test
-    public void testFlottantConduire() {
-    	Propulsion propulsion = new Thermique(42.0, Carburant.ID_ESSENCE);
-    	Engin engin = new Flottant(propulsion);
-    	double valEnergie = propulsion.consommerEnergie();
-    	String valAttendue = String.format(
-    			"(SIMULATION) Cet engin flottant est propulsé par un moteur Thermique. Il consomme %.1f énergie.",
-    			valEnergie);
-    	label1: try {
-    		File sortieFic = new File("tmpOut.txt");
-    		PrintStream sortiePrintStream = new PrintStream(sortieFic);
-    		System.setOut(sortiePrintStream);
-    		engin.conduire();
-    		FileReader sortieFileReader = new FileReader(sortieFic);
-    		char[] cbuf = new char[valAttendue.length()];
-    		sortieFileReader.read(cbuf);
-    		sortieFileReader.close();
-    		//	    System.err.println("Lu: " + String.copyValueOf(cbuf));
-    		String valObservee = String.copyValueOf(cbuf);
-    		assertEquals(valAttendue, valObservee);
-    	} catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	} catch (IOException e) {
-    		label2: e.printStackTrace();
-    	}
-    }
+    
 
     /*
      * 

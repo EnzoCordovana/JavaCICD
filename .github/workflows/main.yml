@@ -9,21 +9,75 @@ on:
       - main
 
 jobs:
-    build:
-      runs-on: ubuntu-latest
+  build:
+    runs-on: ${{ matrix.os }}  # Correction de la syntaxe pour matrix
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]  # Correction de l'indentation
 
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        - name: Set up JDK 17
-          uses: actions/setup-java@v3
-          with:
-            distribution: 'temurin'
-            java-version: '17'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-        - name: Grant execute permission for gradlew
-          run: chmod +x gradlew
+      - name: Grant execute permission for gradlew (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: chmod +x gradlew
 
-        - name: Build with Gradle
-          run: ./gradlew build
+      - name: Build with Gradle
+        run: ./gradlew build
+
+  generate-document:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Generate Javadoc
+        run: ./gradlew javadoc
+
+      - name: Upload Javadoc
+        uses: actions/upload-artifact@v3
+        with:
+          name: javadoc
+          path: build/docs/javadoc
+
+  deploy:
+    needs: generate-document
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Download Javadoc artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: javadoc
+          path: ./public  # GitHub Pages nécessite un dossier public
+
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

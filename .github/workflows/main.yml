@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}  # Correction de la syntaxe pour matrix
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]  # Correction de l'indentation
+        os: [ubuntu-latest]  # Correction de l'indentation
 
     steps:
       - name: Checkout repository

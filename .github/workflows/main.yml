@@ -10,10 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}  # Correction de la syntaxe pour matrix
-    strategy:
-      matrix:
-        os: [ubuntu-latest]  # Correction de l'indentation
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -71,11 +68,6 @@ jobs:
         with:
           name: javadoc
           path: build/docs/javadoc  # GitHub Pages nécessite un dossier public
-
-      - name: Upload artifact to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/docs/javadoc
 
       - name: Deploy to GitHub Pages
         id: deployment

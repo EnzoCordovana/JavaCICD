@@ -59,7 +59,6 @@ jobs:
     # Deploy to the github-pages environment
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     # Specify runner + deployment step
     runs-on: ubuntu-latest
@@ -71,7 +70,7 @@ jobs:
         run: mkdir -p public
         
       - name: Download Javadoc artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: javadoc
           path: ./public  # GitHub Pages nécessite un dossier public
@@ -84,3 +83,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
+      - name: Set GitHub Pages URL
+        run: echo "DEPLOYMENT_URL=${{ steps.deployment.outputs.page_url }}" >> $GITHUB_ENV
+      
+      - name: Print Deployment URL
+        run: echo "Javadoc deployed at $DEPLOYMENT_URL"

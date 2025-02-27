@@ -22,8 +22,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build with Gradle
@@ -57,7 +56,6 @@ jobs:
     environment:
       name: github-pages
 
-    # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
       - name: Setup Pages
@@ -67,7 +65,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: javadoc
-          path: build/docs/javadoc  # GitHub Pages nécessite un dossier public
+          path: build/docs/javadoc
+
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs/javadoc
 
       - name: Deploy to GitHub Pages
         id: deployment
